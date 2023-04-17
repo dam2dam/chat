@@ -16,8 +16,10 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	private final WebSocketHandler webSocketHandler;
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		// Websocket에 접속하기 위한 endpoint는 /ws/chat으로 설정
-		// 다른 서버에서도 접속 가능하도록 CORS : setAllowedOrigins(“*”)를 설정
-		registry.addHandler(webSocketHandler, "/ws/chat").setAllowedOrigins("*");
+		registry
+			// Websocket에 접속하기 위한 endpoint는 /ws/chat으로 설정
+			.addHandler(webSocketHandler, "/ws/chat")
+			// 다른 서버에서도 접속 가능하도록 CORS : setAllowedOrigins(“*”)를 설정
+			.setAllowedOrigins("*");
 	}
 }
