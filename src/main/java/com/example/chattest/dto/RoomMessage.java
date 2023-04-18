@@ -1,5 +1,7 @@
 package com.example.chattest.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class Message {
+public class RoomMessage implements Serializable {
 
 	private String type;
 	private String sender;

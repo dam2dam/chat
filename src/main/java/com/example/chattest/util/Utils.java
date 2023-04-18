@@ -1,6 +1,6 @@
 package com.example.chattest.util;
 
-import com.example.chattest.dto.Message;
+import com.example.chattest.dto.RoomMessage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Utils {
@@ -10,11 +10,11 @@ public class Utils {
 	private Utils() {
 	}
 
-	public static Message getObject(String message) throws Exception {
-		return objectMapper.readValue(message, Message.class);
+	public static RoomMessage getObject(String message) throws Exception {
+		return objectMapper.readValue(message, RoomMessage.class);
 	}
 
-	public static String getString(Message message) throws Exception {
-		return objectMapper.writeValueAsString(message);
+	public static String getString(RoomMessage roomMessage) throws Exception {
+		return objectMapper.writeValueAsString(roomMessage);
 	}
 }
