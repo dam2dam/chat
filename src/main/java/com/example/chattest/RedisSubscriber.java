@@ -3,6 +3,7 @@ package com.example.chattest;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
 import com.example.chattest.dto.RoomMessage;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisSubscriber implements MessageListener {
 
+	private final SimpMessageSendingOperations simpMessageSendingOperations;
 	private final RedisTemplate redisTemplate;
 	private final ObjectMapper objectMapper;
 
@@ -30,7 +32,8 @@ public class RedisSubscriber implements MessageListener {
 
 			log.info("Room - message : {}", roomMessage.getData());
 
-			redisTemplate.convertAndSend("/sub/channel/" + roomMessage.getChannelId(), roomMessage.getData());
+			simpMessageSendingOperations.convertAndSend("/sub/channel/" + roomMessage.getChannelId(), roomMessage);
+			// redisTemplate.convertAndSend("/sub/channel/" + roomMessage.getChannelId(), roomMessage.getData());
 
 		} catch (Exception e) {
 			log.error(e.getMessage());

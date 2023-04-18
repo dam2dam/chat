@@ -23,8 +23,5 @@ public class RedisPublisher {
 		log.info("Topic : {} | Message : {}", channelTopic.getTopic(), roomMessage.getData());
 
 		redisTemplate.convertAndSend(roomMessage.getChannelId(), roomMessage);
-
-		// simpMessageSendingOperations.convertAndSend("/sub/channel/" + roomMessage.getChannelId(), roomMessage);
 	}
-
 }
