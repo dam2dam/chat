@@ -8,12 +8,9 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import com.example.chattest.RedisSubscriber;
 
 @Configuration
 @EnableRedisRepositories
@@ -57,24 +54,29 @@ public class RedisConfig {
 		return redisTemplate;
 	}
 
+	/**
+	 * redis pub/sub 메시지를 처리하는 listener 설정
+	 */
 	@Bean
 	public RedisMessageListenerContainer redisMessageListenerContainer(
-		MessageListenerAdapter listenerAdapter,
-		ChannelTopic channelTopic) {
+		RedisConnectionFactory redisConnectionFactory) {
 
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
-		container.setConnectionFactory(redisConnectionFactory());
-		container.addMessageListener(listenerAdapter, channelTopic);
+		container.setConnectionFactory(redisConnectionFactory);
+		// container.addMessageListener(listenerAdapter, channelTopic);
 		return container;
 	}
 
-	@Bean
-	public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-		return new MessageListenerAdapter(subscriber, "onMessage");
-	}
+	// @Bean
+	// public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
+	// 	return new MessageListenerAdapter(subscriber, "onMessage");
+	// }
 
+	/**
+	 * 단일 Topic 사용을 위한 Bean 설정 -> chatroom
+	 */
 	@Bean
 	public ChannelTopic channelTopic() {
-		return new ChannelTopic("room");
+		return new ChannelTopic("chatroom");
 	}
 }

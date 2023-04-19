@@ -1,10 +1,13 @@
 package com.example.chattest.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+
+import com.example.chattest.handler.StompHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 public class WebSocketConfig
 	implements WebSocketMessageBrokerConfigurer {    // WebSocketMessageBrokerConfigurer를 상속받아 STOMP로 메시지 처리 방법을 구성
 	// private final WebSocketHandler webSocketHandler;
+
+	private final StompHandler stompHandler;
 
 	/**
 	 * 클라이언트에서 WebSocket에 접속할 수 있는 endpoint를 지정
@@ -38,6 +43,14 @@ public class WebSocketConfig
 
 		// 메시지 발행 요청의 prefix. /pub 로 시작하는 메시지만 해당 Broker에서 받아서 처리
 		registry.setApplicationDestinationPrefixes("/pub");
+	}
+
+	/**
+	 * StompHandler가 Websocket 앞단에서 token을 체크할 수 있도록 인터셉터로 설정
+	 */
+	@Override
+	public void configureClientInboundChannel(ChannelRegistration registration) {
+		registration.interceptors(stompHandler);
 	}
 
 	// @Override

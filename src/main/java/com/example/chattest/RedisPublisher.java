@@ -4,7 +4,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.stereotype.Service;
 
-import com.example.chattest.dto.RoomMessage;
+import com.example.chattest.dto.ChatMessage;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +18,10 @@ public class RedisPublisher {
 	/**
 	 * 설정한 topic 경로로 roomMessage 전송
 	 */
-	public void publish(ChannelTopic channelTopic, RoomMessage roomMessage) {
+	public void publish(ChannelTopic channelTopic, ChatMessage chatMessage) {
 
-		log.info("Topic : {} | Message : {}", channelTopic.getTopic(), roomMessage.getData());
+		// log.info("Topic : {} | Message : {}", channelTopic.getTopic(), chatMessage.getData());
 
-		redisTemplate.convertAndSend(roomMessage.getChannelId(), roomMessage);
+		redisTemplate.convertAndSend(chatMessage.getRoomId(), chatMessage);
 	}
 }

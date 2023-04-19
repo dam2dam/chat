@@ -1,48 +1,38 @@
 package com.example.chattest.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.PostConstruct;
-
-import org.springframework.data.redis.listener.ChannelTopic;
-import org.springframework.data.redis.listener.RedisMessageListenerContainer;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageSendingOperations;
+import org.springframework.stereotype.Controller;
 
 import com.example.chattest.RedisPublisher;
-import com.example.chattest.RedisSubscriber;
+import com.example.chattest.dto.ChatMessage;
+import com.example.chattest.repository.ChatRoomRepository;
 
 import lombok.RequiredArgsConstructor;
 
-@RestController
-@RequestMapping("/channel")
+@Controller
 @RequiredArgsConstructor
 public class ChatController {
-	private final RedisMessageListenerContainer redisMessageListenerContainer;
+
+	private final SimpMessageSendingOperations simpMessageSendingOperations;
+
+	// private final JwtTokenProvider jwtTokenProvider;
+
 	private final RedisPublisher redisPublisher;
-	private final RedisSubscriber redisSubscriber;
+	private final ChatRoomRepository chatRoomRepository;
 
-	private Map<String, ChannelTopic> channels;
+	@MessageMapping("/chat")
+	// public void message(ChatMessage chatMessage) {
+	public void message(ChatMessage chatMessage, @Header("token") String token) {
 
-	@PostConstruct
-	public void init() {
-		channels = new HashMap<>();
-	}
+		// 유효하지 않은 Jwt토큰이 세팅될 경우 websocket을 통해 보낸 메시지는 무시
+		// String userId = jwtTokenProvider.getUserIdFromJwt(token);
 
-	@GetMapping
-	public Set<String> findAllChannels() {
-		return channels.keySet();
-	}
+		// 채팅방 입장
+		chatRoomRepository.enterRoom(chatMessage.getRoomId());
 
-	@PostMapping("/{channelId}")
-	public void createRoom(@PathVariable String channelId) {
-		ChannelTopic channel = new ChannelTopic(channelId);
-		redisMessageListenerContainer.addMessageListener(redisSubscriber, channel);
-		channels.put(channelId, channel);
+		// Websocket에 발행된 메시지를 redis로 발행한다(publish)
+		redisPublisher.publish(chatRoomRepository.getTopic(chatMessage.getRoomId()), chatMessage);
 	}
 }

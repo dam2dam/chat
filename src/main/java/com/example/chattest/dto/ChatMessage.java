@@ -15,11 +15,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 @ToString
-public class RoomMessage implements Serializable {
+public class ChatMessage implements Serializable {
 
 	private String type;
 	private String sender;
-	private String channelId;
+	private String roomId;
 	private Object data;
 
 	public void newConnect() {
