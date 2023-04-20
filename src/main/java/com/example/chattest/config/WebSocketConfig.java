@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSocketMessageBroker    // Stomp를 사용하기 위해 선언하는 어노테이션
 public class WebSocketConfig
 	implements WebSocketMessageBrokerConfigurer {    // WebSocketMessageBrokerConfigurer를 상속받아 STOMP로 메시지 처리 방법을 구성
-	// private final WebSocketHandler webSocketHandler;
 
 	private final StompHandler stompHandler;
 
@@ -52,13 +51,4 @@ public class WebSocketConfig
 	public void configureClientInboundChannel(ChannelRegistration registration) {
 		registration.interceptors(stompHandler);
 	}
-
-	// @Override
-	// public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-	// 	registry
-	// 		// Websocket에 접속하기 위한 endpoint는 /ws/chat으로 설정
-	// 		.addHandler(webSocketHandler, "/ws/chat")
-	// 		// 다른 서버에서도 접속 가능하도록 CORS : setAllowedOrigins(“*”)를 설정
-	// 		.setAllowedOrigins("*");
-	// }
 }

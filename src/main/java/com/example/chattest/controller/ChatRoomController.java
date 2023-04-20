@@ -2,6 +2,7 @@ package com.example.chattest.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,5 +50,14 @@ public class ChatRoomController {
 	@GetMapping("/room/{roomId}")
 	public ChatRoom getRoomInfo(@PathVariable String roomId) {
 		return chatRoomRepository.findRoomById(roomId);
+	}
+
+	/**
+	 * 채팅방 삭제
+	 */
+	@DeleteMapping("/room/{roomId}")
+	public String removeRoom(@PathVariable String roomId) {
+
+		return roomId;
 	}
 }

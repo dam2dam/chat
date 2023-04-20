@@ -55,6 +55,7 @@ public class RedisConfig {
 
 	/**
 	 * default 사용
+	 * Redis서버와 상호작용하기 위한 RedisTemplate 관련 설정
 	 */
 	@Bean
 	public RedisTemplate<String, Object> redisTemplate() {
@@ -67,6 +68,9 @@ public class RedisConfig {
 
 	/**
 	 * redis에 발행(publish)된 메시지 처리를 위한 리스너 설정
+	 *
+	 * Redis Channel(Topic)로 부터 메시지를 받고,
+	 * 주입된 리스너들에게 비동기적으로 dispatch 하는 역할을 수행하는 컨테이너
 	 */
 	@Bean
 	public RedisMessageListenerContainer redisMessageListenerContainer(
@@ -81,7 +85,8 @@ public class RedisConfig {
 	}
 
 	/**
-	 * 실제 메시지를 처리하는 subscriber 설정 추가
+	 * RedisMessageListenerContainer로부터 메시지를 dispatch 받고,
+	 * 실제 메시지를 처리하는 비즈니스 로직이 담긴 Subscriber Bean 추가
 	 */
 	@Bean
 	public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {

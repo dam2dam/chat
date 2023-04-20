@@ -9,6 +9,9 @@ import com.example.chattest.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
 
+// 메세지는 STOMP의 "destination" 헤더를 기반으로 
+// @Controller 객체의 @MethodMapping 메서드로 라우팅 됨
+// ApplicationDestinationPrefixes : "/pub"
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
@@ -18,10 +21,10 @@ public class ChatController {
 	private final ChatService chatService;
 
 	/**
-	 * websocket "/pub/chat/message"로 들어오는 메시징을 처리
+	 * websocket "/pub/chat"로 들어오는 메시징을 처리
 	 */
 	@MessageMapping("/chat")
-	public void message(ChatMessage chatMessage) {
+	public void publishMessage(ChatMessage chatMessage) {
 		// public void message(ChatMessage chatMessage, @Header("token") String token) {
 
 		// 유효하지 않은 Jwt토큰이 세팅될 경우 websocket을 통해 보낸 메시지는 무시
