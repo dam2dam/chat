@@ -1,6 +1,5 @@
 package com.example.chattest.service;
 
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 public class RedisSubscriber {
 
 	private final SimpMessageSendingOperations simpMessageSendingOperations;
-	private final RedisTemplate redisTemplate;
 	private final ObjectMapper objectMapper;
 
 	/**
