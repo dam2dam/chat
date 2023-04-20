@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.chattest.dto.ChatRoom;
@@ -26,15 +27,20 @@ public class ChatRoomController {
 	 */
 	@GetMapping("/rooms")
 	public List<ChatRoom> getAllRoomList() {
-		return chatRoomRepository.findAllRooms();
+		List<ChatRoom> chatRooms = chatRoomRepository.findAllRooms();
+		// userCount 정보 설정
+		chatRooms.stream().forEach(room -> room.setUserCount(chatRoomRepository.getUserCount(room.getRoomId())));
+		return chatRooms;
 	}
 
 	/**
 	 * 채팅방 생성
 	 */
 	@PostMapping("/room")
-	public ChatRoom createRoom() {
-		return chatRoomRepository.createRoom();
+	public ChatRoom createRoom(@RequestParam String userId) {
+		// public ChatRoom createRoom(@Header("token") String token) {
+		// String userId = jwtTokenProvider.getUserIdFromJwt(token);
+		return chatRoomRepository.createRoom(userId);
 	}
 
 	/**

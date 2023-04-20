@@ -17,16 +17,16 @@ import lombok.ToString;
 @ToString
 public class ChatMessage implements Serializable {
 
-	private String type;
-	private String sender;
+	private MessageType type;
 	private String roomId;
+	private String sender;
 	private Object data;
+	private long userCount;
 
-	public void newConnect() {
-		this.type = "new";
-	}
-
-	public void closeConnect() {
-		this.type = "close";
+	/**
+	 * 메시지 타입 : 입장, 채팅, 퇴장
+	 */
+	public enum MessageType {
+		ENTER, TALK, QUIT
 	}
 }

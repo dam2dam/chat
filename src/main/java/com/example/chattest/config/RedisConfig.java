@@ -8,9 +8,12 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactor
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import com.example.chattest.service.RedisSubscriber;
 
 @Configuration
 @EnableRedisRepositories
@@ -28,6 +31,14 @@ public class RedisConfig {
 		// redisStandaloneConfiguration.setHostName(host);
 		// redisStandaloneConfiguration.setPort(port);
 		// return new LettuceConnectionFactory(redisStandaloneConfiguration);
+	}
+
+	/**
+	 * 단일 Topic 사용을 위한 Bean 설정 -> chatroom
+	 */
+	@Bean
+	public ChannelTopic channelTopic() {
+		return new ChannelTopic("chatroom");
 	}
 
 	/**
@@ -55,28 +66,25 @@ public class RedisConfig {
 	}
 
 	/**
-	 * redis pub/sub 메시지를 처리하는 listener 설정
+	 * redis에 발행(publish)된 메시지 처리를 위한 리스너 설정
 	 */
 	@Bean
 	public RedisMessageListenerContainer redisMessageListenerContainer(
-		RedisConnectionFactory redisConnectionFactory) {
+		RedisConnectionFactory redisConnectionFactory,
+		MessageListenerAdapter listenerAdapter,
+		ChannelTopic channelTopic) {
 
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(redisConnectionFactory);
-		// container.addMessageListener(listenerAdapter, channelTopic);
+		container.addMessageListener(listenerAdapter, channelTopic);
 		return container;
 	}
 
-	// @Bean
-	// public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
-	// 	return new MessageListenerAdapter(subscriber, "onMessage");
-	// }
-
 	/**
-	 * 단일 Topic 사용을 위한 Bean 설정 -> chatroom
+	 * 실제 메시지를 처리하는 subscriber 설정 추가
 	 */
 	@Bean
-	public ChannelTopic channelTopic() {
-		return new ChannelTopic("chatroom");
+	public MessageListenerAdapter listenerAdapter(RedisSubscriber subscriber) {
+		return new MessageListenerAdapter(subscriber, "sendMessage");
 	}
 }
